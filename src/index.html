@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPERSONIC HYBRID GRID // Automated Oil Tanker 3D Explorer</title>
+  <meta name="description" content="Lightweight interactive 3D explorer for the Supersonic Hybrid Energy & Transit Grid. TBM Tunnel, Egg Partition, Central Spine Honeycomb Inductrack, Carbon Fiber Oil Tanker Capsule, and Crude Oil Heat Sink Pipeline.">
+  <link rel="stylesheet" href="./src/style.css">
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- WebGL 3D Canvas -->
+  <div id="canvas-container"></div>
+
+  <!-- 3D Floating Hotspots Layer -->
+  <div id="hotspots-container"></div>
+
+  <!-- Sci-Fi HUD Layer -->
+  <div id="ui-layer">
+    
+    <!-- Header -->
+    <header class="interactive">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>SUPERSONIC HYBRID GRID</h1>
+          <p>ANATOMY ATELIER // AUTOMATED OIL TANKER 3D EXPLORER</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="status-badge">
+          <span class="status-label">CARGO TYPE</span>
+          <span class="status-value" style="color: var(--accent-amber);">CRUDE OIL FREIGHT</span>
+        </div>
+        <div class="status-badge">
+          <span class="status-label">OIL HEAT SINK</span>
+          <span class="status-value" id="hud-oil-temp">42.5 °C</span>
+        </div>
+        <div class="status-badge">
+          <span class="status-label">VACUUM (0.1%)</span>
+          <span class="status-value" id="hud-pressure">100 Pa</span>
+        </div>
+        <div class="status-badge">
+          <span class="status-label">VELOCITY</span>
+          <span class="status-value" id="hud-speed">0 KM/H</span>
+        </div>
+        <div class="dot-indicator"></div>
+      </div>
+    </header>
+
+    <!-- Main Sidebar Controls -->
+    <div class="main-controls interactive">
+      
+      <!-- View Modes & Explode Slider -->
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>ANATOMY CONTROL</span>
+          <span class="part-tag">EXPLODE VIEW</span>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Exploded View Separation</span>
+            <span id="explode-val" style="font-family: var(--font-mono); color: var(--accent-cyan);">0%</span>
+          </div>
+          <input type="range" id="explode-slider" class="custom-slider" min="0" max="100" value="0">
+        </div>
+
+        <div style="margin-top: 14px;" class="mode-grid">
+          <button id="btn-xray" class="btn-mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            X-RAY VIEW
+          </button>
+          <button id="btn-reset" class="btn-mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            RESET
+          </button>
+        </div>
+      </div>
+
+      <!-- Subsystem Inspector Breakdown -->
+      <div class="panel-card">
+        <div class="panel-title">HYBRID TANKER SUBSYSTEMS</div>
+        <div class="parts-list">
+          <div class="part-item" data-id="shell">
+            <span class="part-name">1. Carbon Fiber Tanker Pod</span>
+            <span class="part-tag">FREIGHT</span>
+          </div>
+          <div class="part-item" data-id="tank">
+            <span class="part-name">2. Oil Tank Cells & Baffles</span>
+            <span class="part-tag">45,000 L</span>
+          </div>
+          <div class="part-item" data-id="spine">
+            <span class="part-name">3. Central Honeycomb Monorail</span>
+            <span class="part-tag">MAGLEV</span>
+          </div>
+          <div class="part-item" data-id="tunnel">
+            <span class="part-name">4. TBM Shell & Egg Partition</span>
+            <span class="part-tag">TUNNEL</span>
+          </div>
+          <div class="part-item" data-id="pipeline">
+            <span class="part-name">5. Crude Oil Heat Sink Grid</span>
+            <span class="part-tag">ENERGY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- High-Speed Run Simulation Toggle -->
+      <div class="panel-card">
+        <button id="btn-simulation" class="btn-sim">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          RUN SIMULATION
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Info Popup Drawer (Side Panel) -->
+    <div id="info-drawer" class="interactive">
+      <button class="drawer-close">&times;</button>
+      <span class="drawer-tag">SUBSYSTEM</span>
+      <h2 class="drawer-title">Component Title</h2>
+      <p class="drawer-desc">Description text</p>
+      
+      <div class="specs-grid">
+        <!-- Specs populated dynamically -->
+      </div>
+    </div>
+
+    <!-- Footer Controls -->
+    <footer class="interactive">
+      <div class="camera-presets">
+        <span style="font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; margin-right: 6px;">CAMERA:</span>
+        <button class="btn-cam" data-cam="overview">OVERVIEW</button>
+        <button class="btn-cam" data-cam="shell">TANKER POD</button>
+        <button class="btn-cam" data-cam="tank">OIL CELLS</button>
+        <button class="btn-cam" data-cam="spine">SPINE RAIL</button>
+        <button class="btn-cam" data-cam="pipeline">OIL PIPELINE</button>
+      </div>
+
+      <button id="btn-audio" class="audio-toggle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.08"></path>
+        </svg>
+        <span>AUDIO ON</span>
+      </button>
+    </footer>
+
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
