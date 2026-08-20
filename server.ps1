@@ -5,10 +5,10 @@ $listener.Prefixes.Add($prefix)
 $listener.Start()
 Write-Host "Hyperloop 3D Server running at $prefix"
 
-$rootDir = "C:\Users\Acer\.gemini\antigravity\scratch\hyperloop-3d-anatomy"
+$rootDir = $PSScriptRoot
 
 # Auto-open in default browser
-Start-Process $prefix
+Start-Process "http://localhost:$port/index.html"
 
 while ($listener.IsListening) {
     try {
